@@ -1,7 +1,5 @@
-// tests/config.test.js
-import assert from 'node:assert';
+import { describe, it, expect } from 'vitest';
 
-// We'll test the logic of getConfigValue since we can't easily import the TS file without a runner
 function getConfigValue(path, obj) {
   return path.split('.').reduce((obj, key) => obj?.[key], obj);
 }
@@ -17,20 +15,16 @@ const mockConfig = {
   }
 };
 
-console.log('Running config logic tests...');
+describe('config logic', () => {
+  it('should get nested config values', () => {
+    expect(getConfigValue('ai.defaultModel', mockConfig)).toBe('claude-3-sonnet');
+  });
 
-try {
-  assert.strictEqual(getConfigValue('ai.defaultModel', mockConfig), 'claude-3-sonnet');
-  console.log('✓ ai.defaultModel - OK');
+  it('should get deep nested config values', () => {
+    expect(getConfigValue('ui.theme.dark', mockConfig)).toBe(true);
+  });
 
-  assert.strictEqual(getConfigValue('ui.theme.dark', mockConfig), true);
-  console.log('✓ ui.theme.dark - OK');
-
-  assert.strictEqual(getConfigValue('non.existent', mockConfig), undefined);
-  console.log('✓ non.existent - OK');
-
-  console.log('\nConfig logic tests passed!');
-} catch (err) {
-  console.error('Config logic tests failed:', err);
-  process.exit(1);
-}
+  it('should return undefined for non-existent paths', () => {
+    expect(getConfigValue('non.existent', mockConfig)).toBeUndefined();
+  });
+});

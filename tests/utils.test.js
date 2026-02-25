@@ -1,23 +1,19 @@
-// tests/utils.test.js
-import assert from 'node:assert';
+import { describe, it, expect } from 'vitest';
 
-// Mocking cn logic since we can't easily import from lib/utils.ts without a build step
-// In a real project, we'd use vitest or jest with ts-jest/swc
 function mockCn(...inputs) {
   return inputs.filter(Boolean).join(' ');
 }
 
-console.log('Running utils logic tests...');
+describe('utils logic', () => {
+  it('should merge basic classes', () => {
+    expect(mockCn('btn', 'btn-primary')).toBe('btn btn-primary');
+  });
 
-try {
-  assert.strictEqual(mockCn('btn', 'btn-primary'), 'btn btn-primary');
-  console.log('✓ basic classes - OK');
+  it('should handle conditional classes', () => {
+    expect(mockCn('btn', false && 'hidden', 'visible')).toBe('btn visible');
+  });
 
-  assert.strictEqual(mockCn('btn', false && 'hidden', 'visible'), 'btn visible');
-  console.log('✓ conditional classes - OK');
-
-  console.log('\nUtils logic tests passed!');
-} catch (err) {
-  console.error('Utils logic tests failed:', err);
-  process.exit(1);
-}
+  it('should handle undefined or null classes', () => {
+    expect(mockCn('btn', undefined, null, 'active')).toBe('btn active');
+  });
+});

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import type { ConversationState } from '@/types/conversation';
+import { readDb, writeDb } from '@/lib/db';
 
 declare global {
   var conversationState: ConversationState | null;
@@ -8,6 +9,14 @@ declare global {
 // GET: Retrieve current conversation state
 export async function GET() {
   try {
+    // Try to get from global first, then fallback to DB
+    if (!global.conversationState) {
+      const dbState = await readDb();
+      if (dbState.conversationState) {
+        global.conversationState = dbState.conversationState;
+      }
+    }
+
     if (!global.conversationState) {
       return NextResponse.json({
         success: true,
@@ -48,6 +57,7 @@ export async function POST(request: NextRequest) {
           }
         };
         
+        await writeDb({ ...await readDb(), conversationState: global.conversationState });
         console.log('[conversation-state] Reset conversation state');
         
         return NextResponse.json({
@@ -72,6 +82,7 @@ export async function POST(request: NextRequest) {
             }
           };
           
+          await writeDb({ ...await readDb(), conversationState: global.conversationState });
           console.log('[conversation-state] Initialized new conversation state for clear-old');
           
           return NextResponse.json({
@@ -87,6 +98,7 @@ export async function POST(request: NextRequest) {
         global.conversationState.context.projectEvolution.majorChanges = 
           global.conversationState.context.projectEvolution.majorChanges.slice(-2);
         
+        await writeDb({ ...await readDb(), conversationState: global.conversationState });
         console.log('[conversation-state] Cleared old conversation data');
         
         return NextResponse.json({
@@ -116,6 +128,7 @@ export async function POST(request: NextRequest) {
           }
           
           global.conversationState.lastUpdated = Date.now();
+          await writeDb({ ...await readDb(), conversationState: global.conversationState });
         }
         
         return NextResponse.json({
@@ -143,6 +156,9 @@ export async function POST(request: NextRequest) {
 export async function DELETE() {
   try {
     global.conversationState = null;
+    const db = await readDb();
+    delete db.conversationState;
+    await writeDb(db);
     
     console.log('[conversation-state] Cleared conversation state');
     
