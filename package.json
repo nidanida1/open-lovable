@@ -8,9 +8,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test:api": "node tests/api-endpoints.test.js",
-    "test:code": "node tests/code-execution.test.js",
-    "test:all": "npm run test:integration && npm run test:api && npm run test:code"
+    "test:config": "node tests/config.test.js",
+    "test:utils": "node tests/utils.test.js",
+    "test:all": "npm run test:config && npm run test:utils"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^2.0.1",

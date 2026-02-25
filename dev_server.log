@@ -1,0 +1,45 @@
+
+> open-lovable@0.1.0 dev
+> next dev --turbopack
+
+   ▲ Next.js 15.4.3 (Turbopack)
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.0.2:3000
+
+ ✓ Starting...
+ ✓ Ready in 2.4s
+ ○ Compiling /generation ...
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+ ✓ Compiled /generation in 20s
+ GET /generation 200 in 22814ms
+ ○ Compiling /api/conversation-state ...
+[conversation-state] Initialized new conversation state for clear-old
+ POST /api/conversation-state 200 in 1378ms
+ GET /api/sandbox-status 200 in 2046ms
+ ✓ Compiled /api/conversation-state in 2.1s
+[create-ai-sandbox-v2] Creating sandbox...
+[create-ai-sandbox-v2] Cleaning up existing sandboxes...
+ POST /api/create-ai-sandbox-v2 200 in 761ms
+[E2BProvider] Error creating sandbox: Error [SandboxError]: 401: authorization header is missing
+    at async E2BProvider.createSandbox (lib/sandbox/providers/e2b-provider.ts:44:21)
+    at async POST (app/api/create-ai-sandbox-v2/route.ts:42:24)
+  42 |
+  43 |       // Create base sandbox
+> 44 |       this.sandbox = await Sandbox.create({
+     |                     ^
+  45 |         apiKey: this.config.e2b?.apiKey || process.env.E2B_API_KEY,
+  46 |         timeoutMs: this.config.e2b?.timeoutMs || appConfig.e2b.timeoutMs
+  47 |       });
+[create-ai-sandbox-v2] Error: Error [SandboxError]: 401: authorization header is missing
+    at async E2BProvider.createSandbox (lib/sandbox/providers/e2b-provider.ts:44:21)
+    at async POST (app/api/create-ai-sandbox-v2/route.ts:42:24)
+  42 |
+  43 |       // Create base sandbox
+> 44 |       this.sandbox = await Sandbox.create({
+     |                     ^
+  45 |         apiKey: this.config.e2b?.apiKey || process.env.E2B_API_KEY,
+  46 |         timeoutMs: this.config.e2b?.timeoutMs || appConfig.e2b.timeoutMs
+  47 |       });
+[?25h
